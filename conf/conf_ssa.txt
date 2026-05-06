@@ -1,0 +1,10 @@
+[General]
+GridSpacingX=0.04
+GridSpacingZ=0.04
+SearchSizeX=40
+SearchSizeY=40
+SearchSizeZ=20
+SearchOriginX=-0.80
+SearchOriginY=-0.80
+SearchOriginZ=-1.50
+RefCoord=0 0 0

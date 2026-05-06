@@ -1,0 +1,13 @@
+GridSpacingX=0.025
+GridSpacingZ=0.025
+SearchSizeX=8
+SearchSizeY=8
+SearchSizeZ=8
+SearchOriginX=-0.08
+SearchOriginY=-0.08
+SearchOriginZ=-1.300
+FMSearchStep=15
+SearchSizeStrike=24
+SearchSizeDip=7
+SearchSizeRake=24
+RefCoord=0 0 0

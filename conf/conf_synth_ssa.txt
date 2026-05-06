@@ -1,0 +1,9 @@
+GridSpacingX=0.040
+GridSpacingZ=0.040
+SearchSizeX=21
+SearchSizeY=21
+SearchSizeZ=21
+SearchOriginX=-0.400
+SearchOriginY=-0.400
+SearchOriginZ=-1.200
+RefCoord=0 0 0

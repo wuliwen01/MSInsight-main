@@ -1,0 +1,4 @@
+[General]
+CameraState=@ByteArray(\x1\0\0\0\0h\x7f@\xec\xc3\0\x64@\xe1\xc0\xc0\0\0\0\x90r\x12\x63\xc1\x1\0\0\0\0h\x7f@\x1\0\0\0\0h\x7f@\0\0\0\x90r\x12\x63\xc1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xf0?)
+OpacitySRV=0.8
+ScatterSize2D=20
