@@ -83,21 +83,21 @@ def focal_planes(strike, dip, rake):
     return planes
 
 
-def mechanism_error(pred_sdr, true_sdr):
+def mechanism_error_componentwise(pred_sdr, true_sdr):
     pred_planes = focal_planes(*pred_sdr)
     true_planes = focal_planes(*true_sdr)
-    best = None
+    errors = []
     for pp in pred_planes:
         for tp in true_planes:
-            err = (
-                angle_diff_360(pp[0], tp[0]),
-                abs(pp[1] - tp[1]),
-                angle_diff_360(pp[2], tp[2]),
+            errors.append(
+                (
+                    angle_diff_360(pp[0], tp[0]),
+                    abs(pp[1] - tp[1]),
+                    angle_diff_360(pp[2], tp[2]),
+                )
             )
-            score = sum(err)
-            if best is None or score < best[0]:
-                best = (score, err)
-    return best[1]
+    errors = np.asarray(errors, dtype=np.float32)
+    return tuple(float(v) for v in np.min(errors, axis=0))
 
 
 def encode_sdr_sincos_np(strike, dip, rake):
@@ -215,4 +215,3 @@ def ricker_wavelet(freq_hz, sample_rate, duration_s):
     wavelet = (1.0 - 2.0 * arg) * np.exp(-arg)
     wavelet /= np.max(np.abs(wavelet)) + 1e-8
     return wavelet.astype(np.float32)
-

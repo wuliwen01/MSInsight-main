@@ -53,7 +53,7 @@ def init_output_bias(model):
         model.fcfinal.bias.copy_(bias)
 
 
-def run_epoch(model, loader, optimizer, device, dip_penalty_weight):
+def run_epoch(model, loader, optimizer, device):
     model.train(optimizer is not None)
     total_loss = 0.0
     total_items = 0
@@ -67,9 +67,6 @@ def run_epoch(model, loader, optimizer, device, dip_penalty_weight):
             pred_mt = sincos_to_moment_tensor_torch(output)
             true_mt = sdr_to_moment_tensor_torch(sdr)
             loss = F.mse_loss(pred_mt, true_mt)
-            if dip_penalty_weight > 0:
-                dip_penalty = F.relu(-output[:, 2]).mean() + F.relu(-output[:, 3]).mean()
-                loss = loss + dip_penalty_weight * dip_penalty
 
             if optimizer is not None:
                 optimizer.zero_grad(set_to_none=True)
@@ -99,8 +96,8 @@ def append_log(log_path, row):
 
 def train_stage(stage_name, model, train_loader, val_loader, optimizer, scheduler, epochs, args, device, best):
     for epoch in range(1, epochs + 1):
-        train_loss = run_epoch(model, train_loader, optimizer, device, args.dip_penalty_weight)
-        val_loss = run_epoch(model, val_loader, None, device, args.dip_penalty_weight)
+        train_loss = run_epoch(model, train_loader, optimizer, device)
+        val_loss = run_epoch(model, val_loader, None, device)
         lr = optimizer.param_groups[0]["lr"]
         if scheduler is not None:
             scheduler.step()
@@ -152,7 +149,6 @@ def main():
     parser.add_argument("--stage2-lr", type=float, default=1e-4)
     parser.add_argument("--stage2-min-lr", type=float, default=5e-6)
     parser.add_argument("--weight-decay", type=float, default=1e-4)
-    parser.add_argument("--dip-penalty-weight", type=float, default=0.01)
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     args = parser.parse_args()
 

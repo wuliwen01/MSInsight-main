@@ -129,9 +129,10 @@ class StrikeDipRakeNet(nn.Module):
         x = torch.tanh(x)
 
         # Group normalization: normalize each (sin, cos) pair separately.
-        # Dip is physically limited to [0, 90], so keep its pair in the first quadrant.
         grouped_output = x.reshape(-1, 3, 2)  # (batch_size, 3, 2)
         normalized_grouped = F.normalize(grouped_output, p=2, dim=2)
+        # The thesis BFNet constrains dip to [0, 90] by keeping the dip pair
+        # in the first quadrant after pairwise normalization.
         strike_pair = normalized_grouped[:, 0, :]
         dip_pair = torch.abs(normalized_grouped[:, 1, :])
         rake_pair = normalized_grouped[:, 2, :]

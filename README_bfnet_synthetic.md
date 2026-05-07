@@ -11,6 +11,8 @@ The default synthetic configuration follows the thesis Dataset A setup where it 
 
 The files are separate from the real field configuration:
 
+BFNet follows the thesis output layer: each strike/dip/rake `(sin, cos)` pair is L2-normalized, and the dip pair is mapped to the first quadrant so decoded dip stays in `[0, 90]`. Evaluation uses the thesis-style equivalent-plane error: it builds the two nodal-plane solutions for both the prediction and the target, computes the four combinations, and reports the per-component minimum error for strike, dip, and rake.
+
 ```text
 conf/conf_synth_jssa.txt
 conf/conf_synth_ssa.txt

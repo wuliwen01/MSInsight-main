@@ -12,7 +12,7 @@ from synthetic_bfnet_utils import (
     decode_sincos_np,
     ensure_dir,
     load_state_dict_flexible,
-    mechanism_error,
+    mechanism_error_componentwise,
     minmax_normalize_tensor,
     read_csv_records,
     resolve_record_path,
@@ -79,7 +79,7 @@ def main():
                 rec = dataset.records[rec_idx]
                 pred = tuple(float(v) for v in pred_sdr[local_i])
                 true = tuple(float(v) for v in true_np[local_i])
-                err = mechanism_error(pred, true)
+                err = mechanism_error_componentwise(pred, true)
                 bfnet_errors.append(err)
 
                 row = {
@@ -96,7 +96,7 @@ def main():
                 }
                 if "jssa_strike" in rec and rec["jssa_strike"] != "":
                     jssa = (float(rec["jssa_strike"]), float(rec["jssa_dip"]), float(rec["jssa_rake"]))
-                    jerr = mechanism_error(jssa, true)
+                    jerr = mechanism_error_componentwise(jssa, true)
                     jssa_errors.append(jerr)
                     row.update(
                         {
@@ -117,7 +117,7 @@ def main():
         writer.writeheader()
         writer.writerows(predictions)
 
-    metrics = {"bfnet": summarize(bfnet_errors)}
+    metrics = {"error_mode": "componentwise", "bfnet": summarize(bfnet_errors)}
     if jssa_errors:
         metrics["jssa"] = summarize(jssa_errors)
     write_json(args.metrics_json, metrics)
@@ -128,4 +128,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
