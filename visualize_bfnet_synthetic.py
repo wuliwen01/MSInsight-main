@@ -9,10 +9,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from build_bfnet_brightness_dataset import (
-    brightness_slice,
     compute_intensity,
     make_local_conf,
+    peak_brightness_slice,
+    spatial_pick_indices,
     straight_ray_traveltime_samples,
+    tau_search_bounds,
 )
 from config import read_config_file, read_station_file
 from data import gen_fm_grid
@@ -40,14 +42,34 @@ def load_brightness_from_waveform(args):
     data = np.load(event_npy)
     tt_samples = straight_ray_traveltime_samples(conf, station, float(rec["sample_rate"]), args.vp)
     intensity = compute_intensity(fm_grid, conf, station, args.attenuation, args.intensity_chunk_size)
-    brightness_gf = brightness_slice(
+    tau_start, tau_end = tau_search_bounds(
+        int(float(rec["origin_sample"])),
+        data.shape[1],
+        tt_samples,
+        args.tau_search_radius_samples,
+    )
+    pick_grid_indices = None
+    if args.tau_pick_mode == "center":
+        pick_grid_indices = spatial_pick_indices(BFNET_SHAPE, args.tau_pick_spatial_radius)
+    brightness_gf, tau_star, _ = peak_brightness_slice(
         data,
         tt_samples,
         intensity,
-        int(float(rec["origin_sample"])),
+        tau_start,
+        tau_end,
         len(station["x"]),
+        args.tau_chunk_size,
+        pick_grid_indices,
+        args.brightness_backend,
+        args.torch_device,
     )
     sample = brightness_gf.reshape(BFNET_SHAPE)
+    rec = dict(rec)
+    rec["tau_star_sample"] = tau_star
+    rec["tau_search_start_sample"] = tau_start
+    rec["tau_search_end_sample"] = tau_end
+    rec["tau_pick_mode"] = args.tau_pick_mode
+    rec["tau_pick_spatial_radius"] = args.tau_pick_spatial_radius
     return sample, data, rec, fm_grid, event_npy.stem
 
 
@@ -148,11 +170,14 @@ def make_figure(sample, waveform, rec, fm_grid, title, args):
     spatial_volume = sample[:, :, :, is_, id_, ir_]
     mech_volume = sample[ix, iy, iz, :, :, :]
     sample_rate = float(rec["sample_rate"]) if rec and "sample_rate" in rec else args.sample_rate
+    tau_text = ""
+    if rec is not None and "tau_star_sample" in rec and rec["tau_star_sample"] != "":
+        tau_text = f" | tau*={int(float(rec['tau_star_sample']))}"
 
     fig = plt.figure(figsize=(15, 10), dpi=args.dpi, constrained_layout=True)
     gs = fig.add_gridspec(3, 4, height_ratios=[1.0, 1.0, 0.9])
     fig.suptitle(
-        f"{title} | max index xyz/sdr={tuple(int(v) for v in max_idx)} | max={float(sample[max_idx]):.4g}",
+        f"{title}{tau_text} | max index xyz/sdr={tuple(int(v) for v in max_idx)} | max={float(sample[max_idx]):.4g}",
         fontsize=12,
     )
 
@@ -192,6 +217,12 @@ def main():
     parser.add_argument("--vp", type=float, default=3.5)
     parser.add_argument("--attenuation", type=float, default=0.5)
     parser.add_argument("--intensity-chunk-size", type=int, default=128)
+    parser.add_argument("--tau-search-radius-samples", type=int, default=40)
+    parser.add_argument("--tau-chunk-size", type=int, default=4)
+    parser.add_argument("--tau-pick-mode", choices=["center", "global"], default="center")
+    parser.add_argument("--tau-pick-spatial-radius", type=int, default=1)
+    parser.add_argument("--brightness-backend", choices=["auto", "numpy", "torch"], default="auto")
+    parser.add_argument("--torch-device", default="cuda")
     parser.add_argument("--sample-rate", type=float, default=500.0)
     parser.add_argument("--max-traces", type=int, default=12)
     parser.add_argument("--dpi", type=int, default=160)

@@ -3,7 +3,7 @@
 This add-on keeps the existing real-data pipeline untouched. It adds a small synthetic workflow for BFNet:
 
 1. Generate synthetic waveform `.npy` files plus labels.
-2. Convert each event to the BFNet input: one jSSA-style brightness-field slice with shape `8x8x8x24x7x24`.
+2. Convert each event to the BFNet input: one jSSA-style peak-time brightness-field slice with shape `8x8x8x24x7x24`.
 3. Train BFNet with the thesis two-stage schedule.
 4. Evaluate BFNet and compare it with the coarse jSSA-grid maximum stored in the sample metadata.
 
@@ -11,7 +11,7 @@ The default synthetic configuration follows the thesis Dataset A setup where it 
 
 The files are separate from the real field configuration:
 
-BFNet follows the thesis output layer: each strike/dip/rake `(sin, cos)` pair is L2-normalized, and the dip pair is mapped to the first quadrant so decoded dip stays in `[0, 90]`. Evaluation uses the thesis-style equivalent-plane error: it builds the two nodal-plane solutions for both the prediction and the target, computes the four combinations, and reports the per-component minimum error for strike, dip, and rake.
+BFNet follows the thesis output layer: each strike/dip/rake `(sin, cos)` pair is L2-normalized, and the dip pair is mapped to the first quadrant so decoded dip stays in `[0, 90]`. The BFNet sample builder searches for the jSSA peak time `tau*` around the synthetic origin sample and stores `B(tau*)`; by default it chooses `tau*` from the central `3x3x3` spatial neighborhood to avoid time-depth edge drift, then saves the complete six-dimensional slice at that time. Use `--tau-search-radius-samples -1` for the full valid tau range, or `0` for the old origin-only slice. For practical speed, the builder follows the thesis optimization idea of removing equivalent focal-mechanism moment tensors during brightness computation, then maps the result back to the full `24x7x24` BFNet mechanism grid. It also uses PyTorch/CUDA for the tau-search brightness stack when CUDA is available. Evaluation uses the thesis-style equivalent-plane error: it builds the two nodal-plane solutions for both the prediction and the target, computes the four combinations, and reports the per-component minimum error for strike, dip, and rake.
 
 ```text
 conf/conf_synth_jssa.txt
@@ -38,7 +38,7 @@ For a small but useful experiment:
 
 ```bash
 python generate_synthetic_dataset.py --event-count 256 --out-dir synthetic/waveforms_a
-python build_bfnet_brightness_dataset.py --events-csv synthetic/waveforms_a/events.csv --out-dir synthetic/bfnet_samples_a --dtype float16
+python build_bfnet_brightness_dataset.py --events-csv synthetic/waveforms_a/events.csv --out-dir synthetic/bfnet_samples_a --dtype float16 --tau-search-radius-samples 40
 python train_bfnet_synthetic.py --samples-csv synthetic/bfnet_samples_a/samples.csv --output model/bfnet_synthetic_a.pt --checkpoint model/bfnet_synthetic_a.ckpt
 python evaluate_bfnet_synthetic.py --samples-csv synthetic/bfnet_samples_a/samples.csv --model model/bfnet_synthetic_a.pt
 ```
@@ -69,7 +69,7 @@ If you already have synthetic waveform `.npy` files, skip `generate_synthetic_da
 event_id,waveform_path,x,y,z,strike,dip,rake,sample_rate,n_samples,origin_sample,snr_db
 ```
 
-The waveform array should be either `(n_sta * 3, n_samples)` in `N/E/Z` order, or `(n_sta, n_samples)` if it is Z-only. Coordinates are in km for `x/y/z`; angles are in degrees. `origin_sample` is the source origin sample used to extract the peak-time brightness slice.
+The waveform array should be either `(n_sta * 3, n_samples)` in `N/E/Z` order, or `(n_sta, n_samples)` if it is Z-only. Coordinates are in km for `x/y/z`; angles are in degrees. `origin_sample` is the reference source origin sample used to search for the peak-time brightness slice.
 
 Then run:
 
