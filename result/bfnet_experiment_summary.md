@@ -1,148 +1,131 @@
-# BFNet Synthetic Experiment Summary
+﻿# BFNet 多层速度模型实验总结
 
-记录时间：2026-05-09
+记录时间：2026-05-16
 
-本文档记录 synthetic dataset A 上 BFNet / jSSA 的历史测试结果。部分 1024、2048 和权重消融文件已经删除，下面的数值来自当时的评估输出和训练记录。
+本阶段实验围绕多层速度模型下的 jSSA 与 BFNet 机制反演展开，核心问题是：在亮度场计算中，将辐射强度方向从几何直达方向改为多层射线追踪得到的震源出射方向（source-takeoff）后，是否能稳定改善 jSSA 与 BFNet 的机制误差。
 
-## 误差口径
+表中误差均为 `mean / median`，单位为度。机制误差采用 `componentwise equivalent-plane` 口径：预测机制与真实机制分别展开为等价节面，对 strike、dip、rake 三个分量分别取等价节面组合中的最小误差。
 
-所有机制误差均使用论文中的 componentwise 等效节面口径：
+## 实验设置
 
-- 分别构造预测机制和真值机制的两组等效节面；
-- 计算 4 种组合下 strike / dip / rake 的误差；
-- strike 与 rake 使用周期最小角差；
-- dip 使用绝对差；
-- 每个角度分别取 4 组组合中的最小值；
-- 表中格式均为 `mean / median`，单位为度。
+数据集 A 使用 5000 个多层射线追踪合成事件，台站为放射状分布：
 
-## 当前保留文件
+- 波形：`synthetic/waveforms_ml_ray_5000`
+- geometry 输入：`synthetic/bfnet_samples_ml_ray_5000_geom`
+- source-takeoff 输入：`synthetic/bfnet_samples_ml_ray_5000_source`
+- 台站：`conf/station_synth_dataset_a.xyz`
 
-当前只保留 5000 tau_center 数据集及两套最终模型：
+数据集 B 使用 5000 个多层射线追踪合成事件，台站为 8x8 正方形分布：
 
-- `synthetic/waveforms_a_5000`
-- `synthetic/bfnet_samples_a_5000_tau_center`
-- `model/bfnet_synthetic_a_5000_tau_center_paper.pt/.ckpt/.json`
-- `model/bfnet_synthetic_a_5000_tau_center_aux002.pt/.ckpt/.json`
-- `result/bfnet_synthetic_a_5000_tau_center_paper_metrics.json`
-- `result/bfnet_synthetic_a_5000_tau_center_paper_predictions.csv`
-- `result/bfnet_synthetic_a_5000_tau_center_paper_train_log.csv`
-- `result/bfnet_synthetic_a_5000_tau_center_aux002_metrics.json`
-- `result/bfnet_synthetic_a_5000_tau_center_aux002_predictions.csv`
-- `result/bfnet_synthetic_a_5000_tau_center_aux002_train_log.csv`
+- 波形：`synthetic/waveforms_ml_ray_5000_b`
+- geometry 输入：`synthetic/bfnet_samples_ml_ray_5000_b_geom`
+- source-takeoff 输入：`synthetic/bfnet_samples_ml_ray_5000_b_source`
+- 台站：`conf/station_synth_dataset_b.xyz`
 
-## 主要实验结果
+两套数据均使用多层速度模型 `conf/vel_synth_jssa.txt`。geometry 与 source-takeoff 的唯一区别是理论辐射强度方向：geometry 使用震源到台站的几何直达方向，source-takeoff 使用 `generate_tt()` 输出的 `incident` 和 `azimuth`，结合多层速度模型换算震源端出射方向。
 
-| 数据集 / 版本 | 状态 | best val loss | BFNet strike | BFNet dip | BFNet rake | jSSA strike | jSSA dip | jSSA rake |
-|---|---|---:|---:|---:|---:|---:|---:|---:|
-| 1024 origin-slice paper | 已删除 | 0.09144 | 15.94 / 9.59 | 4.48 / 3.05 | 19.27 / 10.96 | 7.94 / 5.11 | 3.82 / 3.09 | 19.16 / 14.32 |
-| 1024 tau_center paper | 已删除 | 0.08737 | 13.76 / 8.09 | 3.87 / 2.49 | 20.54 / 10.89 | 7.90 / 5.04 | 3.68 / 2.96 | 18.84 / 14.21 |
-| 2048 tau_center paper, old run | 已删除 | 0.07018 | 9.23 / 4.67 | 2.84 / 2.03 | 14.26 / 9.35 | 8.20 / 5.05 | 3.82 / 3.11 | 18.86 / 14.90 |
-| 2048 tau_center paper, rebuilt run | 已删除 | 0.06915 | 12.87 / 6.02 | 3.38 / 2.42 | 19.13 / 10.48 | 8.20 / 5.05 | 3.82 / 3.11 | 18.86 / 14.90 |
-| 2048 paper -> aux002, alpha=0.02 | 已删除 | 未保留 | 9.57 / 4.56 | 2.86 / 2.03 | 15.39 / 8.55 | 8.20 / 5.05 | 3.82 / 3.11 | 18.86 / 14.90 |
-| 2048 paper -> aux005, alpha=0.05 | 已删除 | 未保留 | 8.72 / 4.22 | 2.63 / 1.92 | 13.68 / 7.77 | 8.20 / 5.05 | 3.82 / 3.11 | 18.86 / 14.90 |
-| 5000 tau_center paper | 保留 | 0.05737 | 9.55 / 4.79 | 2.77 / 1.95 | 15.72 / 9.33 | 7.91 / 4.90 | 3.76 / 3.02 | 18.42 / 14.08 |
-| 5000 paper -> aux001, alpha=0.01 | 已删除 | 0.04946 | 8.19 / 3.97 | 2.45 / 1.78 | 14.26 / 8.57 | 7.91 / 4.90 | 3.76 / 3.02 | 18.42 / 14.08 |
-| 5000 paper -> aux002, alpha=0.02 | 保留 | 0.05362 | 6.95 / 3.48 | 2.26 / 1.60 | 12.93 / 8.11 | 7.91 / 4.90 | 3.76 / 3.02 | 18.42 / 14.08 |
-| 5000 paper -> aux005, alpha=0.05 | 已删除 | 约 0.05816 | 7.38 / 3.64 | 2.23 / 1.62 | 13.80 / 8.15 | 7.91 / 4.90 | 3.76 / 3.02 | 18.42 / 14.08 |
+## 亮度场生成
 
-## 长尾统计
+BFNet 输入来自 jSSA 最终亮度场。每个事件单独构建局部搜索网格，空间网格为 `8 x 8 x 8`，机制网格为 `24 x 7 x 24`。亮度场计算在给定射线追踪走时表、理论辐射强度表和观测波形的基础上，对空间网格、机制网格和 tau 采样时刻进行对齐叠加。
 
-### 5000 paper
+统一使用的关键设置为：
 
-- BFNet strike > 45 deg: 202 / 5000
-- BFNet strike > 60 deg: 113 / 5000
-- BFNet rake > 45 deg: 323 / 5000
-- BFNet rake > 60 deg: 240 / 5000
+- `--tt-model raytrace`
+- `--tau-search-radius-samples 40`
+- `--tau-pick-mode center`
+- `--tau-pick-spatial-radius 1`
+- `--brightness-backend torch`
+- `--dtype float16`
 
-### 5000 aux002, alpha=0.02
+tau-center 策略用于在事件中心附近选择 tau，减弱边界假峰对亮度场切片的影响。它不是本阶段的方法创新点，只作为稳定构建 BFNet 输入的工程设置。
 
-- BFNet strike > 45 deg: 114 / 5000
-- BFNet strike > 60 deg: 62 / 5000
-- BFNet rake > 45 deg: 189 / 5000
-- BFNet rake > 60 deg: 148 / 5000
+## 训练策略
 
-### 5000 aux005, alpha=0.05
-
-- BFNet strike > 45 deg: 122 / 5000
-- BFNet strike > 60 deg: 78 / 5000
-- BFNet rake > 45 deg: 237 / 5000
-- BFNet rake > 60 deg: 191 / 5000
-
-## 数据集与切片版本说明
-
-### origin-slice
-
-旧版本做法：直接使用真值 `origin_sample` 对应的亮度场切片作为 BFNet 输入。
-
-特点：
-
-- 仍然是 jSSA 亮度场，不是直接把波形送入 BFNet；
-- 但没有搜索峰值时刻 tau*；
-- 与论文中 `B(tau*)` 的描述不完全一致。
-
-### tau_center
-
-当前主版本做法：
-
-- 在 `origin_sample +/- 40` 个采样点内搜索 tau；
-- 选 tau* 时只在中心 `3 x 3 x 3` 空间小邻域内寻找最大亮度；
-- 保存完整六维 `B(tau*)`，形状为 `(8, 8, 8, 24, 7, 24)`；
-- 机制网格为 strike 24 点、dip 7 点、rake 24 点；
-- 样本存储为 `float16`。
-
-这个做法避免了全空间边界假峰把 tau* 拉偏，同时保留完整机制空间输入，更适合监督训练。
-
-## 关键诊断结论
-
-1. 1024 到 2048 时，增加数据量能明显改善 BFNet 机制误差。
-2. 2048 到 5000 时，val loss 继续降低，但 paper 版机制角度误差没有同步明显下降。
-3. 原因是训练目标是 moment tensor MSE，而评估是 strike / dip / rake 角度误差；二者在等效节面、低/高 dip、rake 周期边界附近并不完全一致。
-4. BFNet paper 版主要问题是 strike/rake 长尾，而不是 dip。
-5. 5000 paper 中，BFNet 的 dip 已经明显优于 jSSA，但 strike mean 被长尾拖住。
-6. 等效 sin/cos 辅助损失可以明显压制 strike/rake 长尾。
-7. 在 5000 上，`alpha=0.02` 是当前最佳权重；`alpha=0.05` 在 2048 上更好，但在 5000 上不如 `alpha=0.02`。
-
-## 推荐工作流
-
-### 论文版 BFNet 基线
-
-先按论文版训练：
-
-```powershell
-python train_bfnet_synthetic.py --samples-csv synthetic/bfnet_samples_a_5000_tau_center/samples.csv --output model/bfnet_synthetic_a_5000_tau_center_paper.pt --checkpoint model/bfnet_synthetic_a_5000_tau_center_paper.ckpt --log-csv result/
-
-
-
-bfnet_synthetic_a_5000_tau_center_paper_train_log.csv --stage1-momentum 0.9 --num-workers 0
-```
-
-### 改进版 BFNet
-
-在论文版模型基础上做 aux 微调：
-
-```powershell
-python train_bfnet_synthetic.py --samples-csv synthetic/bfnet_samples_a_5000_tau_center/samples.csv --resume model/bfnet_synthetic_a_5000_tau_center_paper.pt --output model/bfnet_synthetic_a_5000_tau_center_aux002.pt --checkpoint model/bfnet_synthetic_a_5000_tau_center_aux002.ckpt --log-csv result/bfnet_synthetic_a_5000_tau_center_aux002_train_log.csv --stage1-epochs 0 --stage2-epochs 40 --stage2-lr 5e-5 --stage2-min-lr 5e-6 --stage2-batch-size 8 --equiv-sincos-loss-weight 0.02 --num-workers 0
-```
-
-### 评估命令
-
-```powershell
-python evaluate_bfnet_synthetic.py --samples-csv synthetic/bfnet_samples_a_5000_tau_center/samples.csv --model model/bfnet_synthetic_a_5000_tau_center_aux002.pt --predictions-csv result/bfnet_synthetic_a_5000_tau_center_aux002_predictions.csv --metrics-json result/bfnet_synthetic_a_5000_tau_center_aux002_metrics.json --batch-size 4 --num-workers 0
-```
-
-## 当前最终结论
-
-当前最好的模型是：
+最终保留三阶段训练策略：
 
 ```text
-model/bfnet_synthetic_a_5000_tau_center_aux002.pt
+stage1: SGD, 100 epochs, aux=0.02
+stage2: AdamW, 100 epochs, aux=0.05
+finetune: AdamW, 50 epochs, aux=0.05, low lr
 ```
 
-最终推荐结果：
+其中 aux 指等价节面 sin/cos 辅助损失权重。stage1 先训练并保存 validation best；stage2 从 stage1 best 开始；finetune 从 stage2 best 开始，用更低学习率继续精修。对照实验表明，单纯将 stage2 拉长到 150 轮不如 `stage2=100 + low-lr finetune=50` 稳定。
 
-| 方法 | Strike mean / median | Dip mean / median | Rake mean / median |
-|---|---:|---:|---:|
-| BFNet aux002 | 6.95 / 3.48 | 2.26 / 1.60 | 12.93 / 8.11 |
-| jSSA | 7.91 / 4.90 | 3.76 / 3.02 | 18.42 / 14.08 |
+## 数据集 A 结果
 
-该结果中，BFNet 的 strike、dip、rake 三个参数的 mean 和 median 均优于 jSSA。
+| 输入方向 | 方法 | Strike | Dip | Rake | 三者误差和 |
+|---|---|---:|---:|---:|---:|
+| geometry | jSSA | 7.83 / 4.46 | 3.72 / 3.03 | 17.75 / 13.19 | 29.30 / 20.68 |
+| geometry | BFNet 三阶段 | 6.23 / 2.76 | 2.02 / 1.42 | 12.36 / 7.29 | 20.61 / 11.47 |
+| source-takeoff | jSSA | 7.02 / 4.14 | 3.34 / 2.51 | 15.02 / 10.64 | 25.38 / 17.29 |
+| source-takeoff | BFNet 三阶段 | 5.91 / 3.00 | 1.96 / 1.37 | 11.19 / 6.87 | 19.06 / 11.24 |
+
+数据集 A 上可以得到三个结论：
+
+1. source-takeoff 相较 geometry 的 jSSA 在 strike、dip、rake 的均值和中位数上均有改进。
+2. BFNet 相较各自对应的 jSSA 在 strike、dip、rake 的均值和中位数上均有改进。
+3. source-takeoff BFNet 相较 geometry BFNet 整体更优，mean 总误差和 median 总误差均更低。
+
+## 数据集 B 结果
+
+| 输入方向 | 方法 | Strike | Dip | Rake | 三者误差和 |
+|---|---|---:|---:|---:|---:|
+| geometry | jSSA | 9.26 / 5.33 | 3.73 / 2.97 | 16.56 / 11.58 | 29.55 / 19.88 |
+| geometry | BFNet 三阶段 | 6.34 / 3.31 | 2.05 / 1.45 | 10.66 / 6.46 | 19.06 / 11.23 |
+| source-takeoff | jSSA | 8.77 / 5.01 | 3.71 / 2.70 | 14.48 / 9.14 | 26.96 / 16.85 |
+| source-takeoff | BFNet 三阶段 | 6.41 / 3.48 | 2.01 / 1.38 | 11.21 / 6.30 | 19.63 / 11.15 |
+
+数据集 B 上同样可以得到前两个结论：
+
+1. source-takeoff 相较 geometry 的 jSSA 在 strike、dip、rake 的均值和中位数上均有改进。
+2. BFNet 相较各自对应的 jSSA 在 strike、dip、rake 的均值和中位数上均有改进。
+
+对于 source-takeoff BFNet 相较 geometry BFNet，数据集 B 的结果更接近：source-takeoff 的 median 总误差略低，且 dip 与 rake median 更优；geometry 的 mean 总误差略低，主要来自 strike mean 和 rake mean。因而更严谨的表述是：source-takeoff 对 jSSA 的改进最稳定；BFNet 对 jSSA 的改进也稳定；source-takeoff 对 BFNet 的进一步提升在数据集 A 更明显，在数据集 B 主要体现在中位数和部分分量上。
+
+## 跨台站分布模型泛化测试
+
+为检验模型泛化能力，使用数据集 A 上训练得到的 `seed20260506` 三阶段 BFNet 模型，直接评估 500 个 dataset B 事件，不在 dataset B 上重新训练。该实验与上一节的 dataset B 重新训练实验不同，主要用于考察 A 台站分布训练出的模型能否迁移到 8x8 正方形台站分布。当前 500B 验证集使用 `seed=20260523` 重新生成。
+
+| 输入方向 | 方法 | Strike | Dip | Rake | 三者误差和 |
+|---|---|---:|---:|---:|---:|
+| geometry | jSSA | 9.69 / 5.55 | 3.92 / 3.30 | 17.00 / 11.91 | 30.61 / 20.75 |
+| geometry | BFNet 三阶段 | 9.25 / 4.43 | 2.90 / 1.97 | 14.75 / 9.07 | 26.90 / 15.47 |
+| source-takeoff | jSSA | 9.14 / 5.40 | 3.78 / 2.79 | 16.23 / 10.52 | 29.16 / 18.72 |
+| source-takeoff | BFNet 三阶段 | 8.69 / 4.05 | 2.74 / 2.22 | 13.19 / 7.64 | 24.61 / 13.91 |
+
+该泛化测试表明：source-takeoff jSSA 仍优于 geometry jSSA；geometry BFNet 和 source-takeoff BFNet 相较各自对应的 jSSA，在 strike、dip、rake 的均值和中位数上均有改进，没有出现分量例外。整体上，source-takeoff BFNet 的 mean 总误差和 median 总误差均低于 geometry BFNet。
+
+## 综合结论
+
+两个台站分布下，source-takeoff 辐射方向均能稳定改善 jSSA 机制误差，说明多层介质中使用震源出射方向计算辐射强度比几何直达方向更符合合成数据的物理生成机制。
+
+BFNet 在 geometry 和 source-takeoff 两套输入下均显著优于各自 jSSA，说明神经网络能够进一步校正 jSSA 亮度场中的机制误差。三阶段训练中，额外低学习率 finetune 能进一步降低机制误差，优于单纯拉长 stage2 训练。
+
+source-takeoff BFNet 相较 geometry BFNet 的优势具有数据集依赖性：在数据集 A 上整体优势明确；在数据集 B 上整体表现接近，source-takeoff 的中位数总误差略优，而 geometry 的均值总误差略优。这说明 source-takeoff 的物理修正对传统 jSSA 的增益最稳定，对 BFNet 的增益还受到台站分布、长尾样本和训练目标的共同影响。
+
+## 保留文件
+
+数据集 A 最终模型与结果：
+
+- `model/seed20260506_final/`
+- `result/seed20260506_final/`
+
+数据集 B 最终模型与结果：
+
+- `model/dataset_b_5000/`
+- `result/dataset_b_5000/`
+
+跨台站分布模型泛化测试：
+
+- `result/generalization_500_b/`
+
+主数据集 jSSA 基准：
+
+- `result/dataset_a_5000/jssa_ml_ray_5000_geom_vs_source_metrics.json`
+- `result/dataset_a_5000/jssa_ml_ray_5000_geom_vs_source_paired_errors.csv`
+
+辅助诊断：
+
+- `result/diagnostics/station_azimuth_strike_diagnostics.json`
+- `result/diagnostics/station_azimuth_strike_diagnostics.csv`
+
