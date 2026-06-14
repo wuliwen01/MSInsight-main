@@ -21,6 +21,9 @@ Thumbs.db
 *.tmp
 *.bak
 
+# Runtime-generated configuration
+/conf/conf_jssa_tmp.txt
+
 # Raw waveform and generated synthetic data
 /waveform/
 /synthetic/
