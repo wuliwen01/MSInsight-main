@@ -30,8 +30,11 @@ The main purpose of the repository is to document and reproduce the paper-level 
 - `make_graphical_abstract.py`
   Generates the graphical abstract.
 
+- `result/source_takeoff_experiment_summary_en.md`
+  English summary of the synthetic, BFNet, cross-station generalization, and real-field validation experiments.
+
 - `result/source_takeoff_experiment_summary.md`
-  Summary of the synthetic, BFNet, cross-station generalization, and real-field validation experiments.
+  Chinese version of the experiment summary.
 
 - `result/dataset_a_final/`
   Dataset A derived jSSA and BFNet comparison results.
