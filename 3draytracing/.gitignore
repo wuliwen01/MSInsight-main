@@ -1,0 +1,4 @@
+output/
+*.pdb
+*.exp
+LOC/

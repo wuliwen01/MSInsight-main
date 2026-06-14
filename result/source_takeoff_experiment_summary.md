@@ -155,6 +155,8 @@ Dataset B 最终结果：
 - `make_manuscript_figures.py`
 - `make_graphical_abstract.py`
 
-模型文件：
+本地模型权重：
 
 - `model/seed20260506_final/`
+
+该目录包含训练得到的模型权重，文件体积较大，通常不纳入 GitHub 仓库；论文复现实验主要依赖派生评价结果、预测结果和绘图脚本。

@@ -1,0 +1,35 @@
+{
+  "paired_n": 5000,
+  "geom_aux005_predictions_csv": "result\\bfnet_ml_ray_5000_geom_s1best_s2_100_aux005_predictions.csv",
+  "source_aux005_predictions_csv": "result\\bfnet_ml_ray_5000_source_s1best_s2_100_aux005_predictions.csv",
+  "positive_means_source_aux005_better": {
+    "strike": {
+      "mean_improvement_geom_aux005_minus_source_aux005": 0.7636582074506209,
+      "median_improvement_geom_aux005_minus_source_aux005": 0.08641809225082397,
+      "source_aux005_better_count": 2559,
+      "geom_aux005_better_count": 2441,
+      "tie_count": 0
+    },
+    "dip": {
+      "mean_improvement_geom_aux005_minus_source_aux005": 0.20364436368423047,
+      "median_improvement_geom_aux005_minus_source_aux005": 0.12482476234436035,
+      "source_aux005_better_count": 2654,
+      "geom_aux005_better_count": 2346,
+      "tie_count": 0
+    },
+    "rake": {
+      "mean_improvement_geom_aux005_minus_source_aux005": 1.3632710510459496,
+      "median_improvement_geom_aux005_minus_source_aux005": 0.23028942942619324,
+      "source_aux005_better_count": 2605,
+      "geom_aux005_better_count": 2395,
+      "tie_count": 0
+    },
+    "sum": {
+      "mean_improvement_geom_aux005_minus_source_aux005": 2.330573622180801,
+      "median_improvement_geom_aux005_minus_source_aux005": 0.5120682790875435,
+      "source_aux005_better_count": 2620,
+      "geom_aux005_better_count": 2380,
+      "tie_count": 0
+    }
+  }
+}

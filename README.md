@@ -1,52 +1,102 @@
-# MSInsight
+# MSInsight Source-side Takeoff Radiation Correction
 
-## Project Directory Structure
+This repository contains the code, configuration files, derived metrics, and figure-generation scripts used for the manuscript on source-side takeoff radiation correction for microseismic focal mechanism inversion in layered velocity models.
 
-This project is organized into the following main directories and files:
+The main purpose of the repository is to document and reproduce the paper-level analyses comparing the conventional geometric source-receiver radiation direction with the proposed source-side takeoff radiation direction in jSSA and BFNet workflows.
 
-- **3draytracing/**: Contains CUDA-based 3D ray tracing implementation
+## Repository Contents
 
-  - see readme.md for more details
+- `conf/`
+  Configuration files, station files, and velocity models used by SSA, jSSA, synthetic experiments, and real-field processing.
 
-- **conf/**: Configuration files for the project
+- `3draytracing/` and `fasterStackCUDA/`
+  CUDA/C++ source code for ray tracing and stacking-related acceleration.
 
-  - Various configuration files for different algorithms (jssa, ssa)
-  - Station location and velocity model files
+- `build_bfnet_brightness_dataset_raytrace.py`
+  Builds BFNet brightness-field samples using ray-traced travel-time and radiation-direction information.
 
-- **fasterStackCUDA/**: CUDA implementations for stacking algorithms
+- `generate_synthetic_dataset_raytrace.py`
+  Generates ray-tracing-based synthetic microseismic datasets.
 
-  - see README for more details
+- `train_bfnet_synthetic.py`, `evaluate_bfnet_synthetic.py`, and `visualize_bfnet_synthetic.py`
+  BFNet training, evaluation, and visualization scripts.
 
-- **model/**: Contains the trained neural network model
+- `validate_real_source_takeoff_jssa.py`
+  Real-field station-holdout validation for comparing geometric source-receiver and source-side takeoff radiation directions.
 
-  - bfnet_251104a.pt: Pre-trained BFNet model
+- `make_manuscript_figures.py`
+  Generates the manuscript figures from the derived metrics and processed comparison results.
 
-- **result/**: Output directory for processing results
+- `make_graphical_abstract.py`
+  Generates the graphical abstract.
 
-- **waveform/**: Contains seismic waveform data files
+- `result/source_takeoff_experiment_summary.md`
+  Summary of the synthetic, BFNet, cross-station generalization, and real-field validation experiments.
 
-- **Python Scripts**:
-  - config.py: Configuration management
-  - data.py: Data handling and processing
-  - draw.py: Visualization utilities
-  - model_bfnet.py: BFNet model implementation
-  - stackCU.py: use SSA.dll to stack
-  - stackMechCU.py: use jSSA.dll to stack
-  - utils.py: Utility functions
+- `result/dataset_a_final/`
+  Dataset A derived jSSA and BFNet comparison results.
 
-## Getting Started
+- `result/cross_station_generalization_b500/`
+  Cross-station generalization results on the Dataset B 500-event subset.
 
-To test the project, please use the `test.ipynb` notebook which contains comprehensive examples and test cases for all the major functionalities.
+- `result/real_source_takeoff_jssa_holdout_50e3s/`
+  Real-field station-holdout validation metrics for the Ningxia coalbed methane field data.
 
-## Requirements
+- `result/manuscript_figures/`
+  Manuscript figures and figure captions.
 
-- Python 3.x
-- CUDA-compatible GPU
-- Required Python packages (see requirements.txt if available)
+- `result/graphical_abstract/`
+  Graphical abstract files.
 
-## Usage
+- `docs/data_availability.md`
+  Data availability statement and details about files not included in the repository.
 
-1. Install the required dependencies
-2. Run the test.ipynb notebook to verify the installation and understand the basic usage
-3. Modify the configuration files in the `conf/` directory as needed
-4. Process your data using the provided Python scripts
+## Data Availability
+
+Raw synthetic waveform datasets, generated BFNet brightness-field sample arrays, and real-field waveform data are not included in this repository. The synthetic waveform datasets and brightness-field samples are excluded because of file-size limitations. The real-field waveform data from the Ningxia coalbed methane monitoring project are additionally subject to confidentiality agreements with the field operator.
+
+The repository provides processing scripts, configuration files, derived evaluation metrics, processed comparison results, and figure-generation scripts that support the conclusions of the manuscript. See `docs/data_availability.md` for details.
+
+## Installation
+
+Create a Python environment and install the required packages:
+
+```bash
+pip install -r requirements.txt
+```
+
+The CUDA-based components require a CUDA-compatible GPU and a local CUDA/MSVC build environment on Windows when recompilation is needed. Precompiled DLLs may be used when compatible with the local system.
+
+## Regenerating Manuscript Figures
+
+To regenerate the manuscript figures:
+
+```bash
+python make_manuscript_figures.py
+```
+
+The figures are written to:
+
+```text
+result/manuscript_figures/
+```
+
+To regenerate the graphical abstract:
+
+```bash
+python make_graphical_abstract.py
+```
+
+The graphical abstract is written to:
+
+```text
+result/graphical_abstract/
+```
+
+## Notes for Reuse
+
+The repository is organized around derived metrics and reproducible processing scripts rather than raw waveform data. To rerun the full waveform-level experiments, place the corresponding synthetic or real-field waveform data in the expected local directories and update the configuration files in `conf/` as needed.
+
+## License
+
+See `LICENSE`.

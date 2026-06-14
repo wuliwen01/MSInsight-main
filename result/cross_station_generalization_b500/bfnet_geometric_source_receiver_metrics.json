@@ -1,0 +1,19 @@
+{
+  "error_mode": "componentwise",
+  "bfnet": {
+    "strike_mean": 9.249967575073242,
+    "strike_median": 4.426854133605957,
+    "dip_mean": 2.9011685848236084,
+    "dip_median": 1.969687581062317,
+    "rake_mean": 14.746438980102539,
+    "rake_median": 9.071846008300781
+  },
+  "jssa": {
+    "strike_mean": 9.691439628601074,
+    "strike_median": 5.547563552856445,
+    "dip_mean": 3.9158804416656494,
+    "dip_median": 3.296001434326172,
+    "rake_mean": 17.000720977783203,
+    "rake_median": 11.908700942993164
+  }
+}

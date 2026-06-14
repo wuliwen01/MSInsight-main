@@ -1,0 +1,52 @@
+# Python cache and local environments
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# IDE and OS files
+/.config/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Office/editor temporary files
+~$*
+*.tmp
+*.bak
+
+# Raw waveform and generated synthetic data
+/waveform/
+/synthetic/
+*.sgy
+*.segy
+*.mseed
+*.sac
+*.npy
+*.npz
+
+# Large model/checkpoint files
+/model/
+*.pt
+*.pth
+*.ckpt
+
+# Manuscript drafts and local-only documents
+/thesis.pdf
+/result/Journal_of_Applied_Geophysics_source_takeoff_template.docx
+/result/~$*
+
+# Non-paper exploratory outputs
+/result/paper_figures/
+/result/patent_figures/
+/result/pipeline_benchmark*/
+/result/diagnostics/
+
+# Generated logs can be large; keep curated metrics/csv/json instead
+*.log
