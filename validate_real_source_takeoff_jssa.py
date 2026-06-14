@@ -23,7 +23,6 @@ from stackCU import calc_position as calc_position_ssa
 from stackCU import stack_CUDA
 from stackMechCU import calc_position as calc_position_jssa
 from stackMechCU import gen_intensity_CUDA, stack_mech_CUDA
-from synthetic_pipeline_io import pipeline_file_extension_from_env, pipeline_reader_from_env
 
 
 def update_jssa_conf(base_conf, x, y, z):
@@ -288,6 +287,7 @@ def parse_args():
     parser.add_argument("--splits", type=int, default=0, help="Number of station holdout splits per event. 0 means all-station comparison only.")
     parser.add_argument("--holdout-frac", type=float, default=0.25)
     parser.add_argument("--seed", type=int, default=20260528)
+    parser.add_argument("--file-extension", default=".sgy", help="Waveform file extension to scan in the input folder.")
     return parser.parse_args()
 
 
@@ -306,8 +306,8 @@ def main():
     fm_matrices = moment_tensor_matrices_from_fm_grid(fm_grid)
     velocity_model = read_velocity_model(str(Path(folder_conf) / "vel_jssa.txt"))
 
-    read_waveform = pipeline_reader_from_env(readsegy)
-    file_extension = pipeline_file_extension_from_env()
+    read_waveform = readsegy
+    file_extension = args.file_extension
     file_list = sorted(f for f in os.listdir(args.folder_data) if f.endswith(file_extension))
     if args.max_files:
         file_list = file_list[: args.max_files]

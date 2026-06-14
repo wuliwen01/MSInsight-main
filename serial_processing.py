@@ -22,11 +22,13 @@ warnings.filterwarnings('ignore')
 # ============================================================================
 # 配置路径
 # ============================================================================
-folder_data = './waveform'
-folder_conf = './conf'
-out_path = './result'
-model_path = './model/bfnet_251104a.pt'
-sta_fname = f'{folder_conf}/station_sorted.txt'
+folder_data = os.environ.get('MSI_PIPELINE_FOLDER_DATA', './waveform')
+folder_conf = os.environ.get('MSI_PIPELINE_FOLDER_CONF', './conf')
+out_path = os.environ.get('MSI_PIPELINE_OUT_PATH', './result')
+model_path = os.environ.get('MSI_PIPELINE_MODEL_PATH', './model/bfnet_251104a.pt')
+sta_fname = os.environ.get('MSI_PIPELINE_STATION_FILE', f'{folder_conf}/station_sorted.txt')
+file_extension = os.environ.get('MSI_WAVEFORM_EXTENSION', '.sgy')
+read_waveform = readsegy
 
 
 # ============================================================================
@@ -117,7 +119,7 @@ def main():
         print(f"GPU: {torch.cuda.get_device_name(0)}")
 
     # ===== 读取文件列表 =====
-    file_list = [f for f in os.listdir(folder_data) if f.endswith(".sgy")]
+    file_list = [f for f in os.listdir(folder_data) if f.endswith(file_extension)]
     print(f"Found {len(file_list)} waveform files")
 
     # ===== 读取配置文件 =====
@@ -140,7 +142,7 @@ def main():
     tt_max = np.max(tt_ssa)
     print(f"Max travel time: {tt_max:.2f}s")
 
-    peak_threshold = 2.5
+    peak_threshold = float(os.environ.get('MSI_PIPELINE_PEAK_THRESHOLD', '2.5'))
 
     print(f"\nSSA config: SearchSize=({conf_ssa['SearchSizeX']}, {conf_ssa['SearchSizeY']}, {conf_ssa['SearchSizeZ']})")
     print(f"jSSA config: SearchSize=({conf_jssa['SearchSizeX']}, {conf_jssa['SearchSizeY']}, {conf_jssa['SearchSizeZ']})")
@@ -188,7 +190,7 @@ def main():
             preprocess_start = time.time()
 
             # 读取数据
-            data, sta_ids, sample_rate, datetime_start = readsegy(file_path)
+            data, sta_ids, sample_rate, datetime_start = read_waveform(file_path)
             n_time = data.shape[1]
             n_sta = data.shape[0]
 
