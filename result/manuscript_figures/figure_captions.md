@@ -4,7 +4,7 @@ Fig. 2. Station geometries of Dataset A and Dataset B.
 
 Fig. 3. Distributions of jSSA focal mechanism errors for Dataset A and Dataset B.
 
-Fig. 4. Representative jSSA beachball solutions for Dataset A and Dataset B.
+Fig. 4. Example jSSA beachball solutions from Dataset A and Dataset B.
 
 Fig. 5. Paired station-holdout validation for the Ningxia field data.
 

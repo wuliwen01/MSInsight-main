@@ -17,7 +17,7 @@ FIGURE_NAMES = {
     "fig1": "Fig. 1. Geometric source-receiver and source-side takeoff directions in a layered velocity model",
     "fig2": "Fig. 2. Station geometries of Dataset A and Dataset B",
     "fig3": "Fig. 3. Distributions of jSSA focal mechanism errors for Dataset A and Dataset B",
-    "fig4": "Fig. 4. Representative jSSA beachball solutions for Dataset A and Dataset B",
+    "fig4": "Fig. 4. Example jSSA beachball solutions from Dataset A and Dataset B",
     "fig5": "Fig. 5. Paired station-holdout validation for the Ningxia field data",
     "fig6": "Fig. 6. Polar distributions of jSSA focal mechanism parameters for the Ningxia field data",
 }
