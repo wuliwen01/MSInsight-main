@@ -39,6 +39,9 @@ The main purpose of the repository is to document and reproduce the paper-level 
 - `result/dataset_a_final/`
   Dataset A derived jSSA and BFNet comparison results.
 
+- `result/dataset_b_final/`
+  Dataset B derived jSSA and BFNet comparison results.
+
 - `result/cross_station_generalization_b500/`
   Cross-station generalization results on the Dataset B 500-event subset.
 

@@ -7,6 +7,7 @@ The raw synthetic waveform datasets and generated BFNet brightness-field samples
 The repository provides the derived results needed to support the conclusions reported in the manuscript, including:
 
 - Dataset A jSSA and BFNet comparison metrics in `result/dataset_a_final/`
+- Dataset B jSSA and BFNet comparison metrics in `result/dataset_b_final/`
 - Cross-station generalization results in `result/cross_station_generalization_b500/`
 - Real-field station-holdout validation metrics in `result/real_source_takeoff_jssa_holdout_50e3s/`
 - Manuscript figures and captions in `result/manuscript_figures/`

@@ -1,0 +1,52 @@
+{
+  "error_mode": "componentwise",
+  "geometric_source_receiver": {
+    "strike_mean": 9.262134552001953,
+    "strike_median": 5.331246852874756,
+    "dip_mean": 3.7254788875579834,
+    "dip_median": 2.9721741676330566,
+    "rake_mean": 16.559568405151367,
+    "rake_median": 11.57950210571289
+  },
+  "source_side_takeoff": {
+    "strike_mean": 8.767959594726562,
+    "strike_median": 5.012376308441162,
+    "dip_mean": 3.7110562324523926,
+    "dip_median": 2.6952476501464844,
+    "rake_mean": 14.482585906982422,
+    "rake_median": 9.143693923950195
+  },
+  "paired_n": 5000,
+  "geometric_predictions_csv": "result\\dataset_b_final\\bfnet_geometric_source_receiver\\bfnet_ml_ray_5000_b_geom_seed20260516_s2_100plus50_aux005_predictions.csv",
+  "source_side_takeoff_predictions_csv": "result\\dataset_b_final\\bfnet_source_side_takeoff\\bfnet_ml_ray_5000_b_source_seed20260516_s2_100plus50_aux005_predictions.csv",
+  "positive_values_mean_source_side_takeoff_better": {
+    "strike": {
+      "mean_improvement_geometric_minus_source_side_takeoff": 0.49417543473960834,
+      "median_improvement_geometric_minus_source_side_takeoff": 0.0,
+      "source_side_takeoff_better_count": 1525,
+      "geometric_source_receiver_better_count": 1269,
+      "tie_count": 2206
+    },
+    "dip": {
+      "mean_improvement_geometric_minus_source_side_takeoff": 0.014422468948084861,
+      "median_improvement_geometric_minus_source_side_takeoff": 0.0,
+      "source_side_takeoff_better_count": 1302,
+      "geometric_source_receiver_better_count": 1234,
+      "tie_count": 2464
+    },
+    "rake": {
+      "mean_improvement_geometric_minus_source_side_takeoff": 2.0769826867341994,
+      "median_improvement_geometric_minus_source_side_takeoff": 0.0,
+      "source_side_takeoff_better_count": 1748,
+      "geometric_source_receiver_better_count": 982,
+      "tie_count": 2270
+    },
+    "total": {
+      "mean_improvement_geometric_minus_source_side_takeoff": 2.585580590421893,
+      "median_improvement_geometric_minus_source_side_takeoff": 0.0,
+      "source_side_takeoff_better_count": 1873,
+      "geometric_source_receiver_better_count": 1013,
+      "tie_count": 2114
+    }
+  }
+}

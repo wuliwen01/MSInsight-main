@@ -1,0 +1,35 @@
+{
+  "paired_n": 5000,
+  "geometric_predictions_csv": "result\\dataset_b_final\\bfnet_geometric_source_receiver\\bfnet_ml_ray_5000_b_geom_seed20260516_s2_100plus50_aux005_predictions.csv",
+  "source_side_takeoff_predictions_csv": "result\\dataset_b_final\\bfnet_source_side_takeoff\\bfnet_ml_ray_5000_b_source_seed20260516_s2_100plus50_aux005_predictions.csv",
+  "positive_values_mean_source_side_takeoff_better": {
+    "strike": {
+      "mean_improvement_geometric_minus_source_side_takeoff": -0.06578907860677573,
+      "median_improvement_geometric_minus_source_side_takeoff": -0.07107222825288773,
+      "source_side_takeoff_better_count": 2456,
+      "geometric_source_receiver_better_count": 2544,
+      "tie_count": 0
+    },
+    "dip": {
+      "mean_improvement_geometric_minus_source_side_takeoff": 0.0422864121190767,
+      "median_improvement_geometric_minus_source_side_takeoff": 0.04374420642852783,
+      "source_side_takeoff_better_count": 2563,
+      "geometric_source_receiver_better_count": 2437,
+      "tie_count": 0
+    },
+    "rake": {
+      "mean_improvement_geometric_minus_source_side_takeoff": -0.552120424892212,
+      "median_improvement_geometric_minus_source_side_takeoff": -0.04288536310195923,
+      "source_side_takeoff_better_count": 2473,
+      "geometric_source_receiver_better_count": 2527,
+      "tie_count": 0
+    },
+    "total": {
+      "mean_improvement_geometric_minus_source_side_takeoff": -0.5756230913799111,
+      "median_improvement_geometric_minus_source_side_takeoff": -0.046240150928497314,
+      "source_side_takeoff_better_count": 2488,
+      "geometric_source_receiver_better_count": 2512,
+      "tie_count": 0
+    }
+  }
+}

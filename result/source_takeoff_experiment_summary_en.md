@@ -1,7 +1,7 @@
 # Source-side Takeoff Experiment Summary
 
 Record date: 2026-05-16
-Last updated: 2026-06-11
+Last updated: 2026-06-15
 
 This document summarizes the experiments for source-side takeoff radiation correction in layered velocity models. The central question is whether replacing the conventional **geometric source-receiver direction** with the **source-side takeoff direction** obtained from multilayer ray tracing can improve jSSA focal mechanism inversion and further affect BFNet prediction performance.
 
@@ -129,6 +129,14 @@ Dataset A final results:
 - `result/dataset_a_final/bfnet_source_side_takeoff/`
 - `result/dataset_a_final/jssa_geometric_vs_source_takeoff/`
 - `result/dataset_a_final/bfnet_geometric_vs_source_takeoff_paired_stats.json`
+
+Dataset B final results:
+
+- `result/dataset_b_final/`
+- `result/dataset_b_final/bfnet_geometric_source_receiver/`
+- `result/dataset_b_final/bfnet_source_side_takeoff/`
+- `result/dataset_b_final/jssa_geometric_vs_source_takeoff/`
+- `result/dataset_b_final/bfnet_geometric_vs_source_takeoff_paired_stats.json`
 
 Cross-station generalization test:
 
